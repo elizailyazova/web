@@ -107,21 +107,27 @@ elements.forEach((element, index) => {
 
 
 //weather
-const cityNameInput = document.querySelector('.cityName'),
-    city = document.querySelector('.city'),
-    temp = document.querySelector('.temp')
+const searchCity = document.querySelector('.searchCity')
+const cityTemp = document.querySelector('.cityTemp')
+const cityName = document.querySelector('.cityName')
+
+const BASE_URL = 'http://api.openweathermap.org/data/2.5/weather'
+const apiKey = 'e417df62e04d3b1b111abeab19cea714'
 
 
-const WEATHER_API = 'http://api.openweathermap.org/data/2.5/weather';
-const API_KEY = 'e417df62e04d3b1b111abeab19cea714';
-
-cityNameInput.oninput = async (event)=>{
-    try {
-        const response = await fetch(`${WEATHER_API}?q=${event.target.value}&appid=${API_KEY}`)
-        const  data = await response.json()
-        city.innerHTML = data.name ? data.name:'Город не найден'
-        temp.innerHTML = data?.main?.temp?Math.round(data?.main?.temp - 273) + "&deg;C":'...'
-    }catch (e){
-        console.error('e')
-    }
+searchCity.oninput = async() => {
+    const response = await fetch(`${BASE_URL}?q=${searchCity.value}&appid=${apiKey}`)
+    const data = await response.json()
+    cityName.innerHTML = data?.name || '...'
+	cityTemp.innerHTML = data?.main?.temp ? `${Math.round(data?.main?.temp - 274)}&deg;C` : '...'
 }
+
+async function test(){
+	const response = await fetch('https://ipinfo.io?token=d4f19f73332858')
+	const data = await response.json()
+	const response2 = await fetch(`${BASE_URL}?q=${data.city}&appid=${apiKey}`)
+    const data2 = await response2.json()
+    cityName.innerHTML = data2?.name || '...'
+	cityTemp.innerHTML = data2?.main?.temp ? `${Math.round(data2?.main?.temp - 274)}&deg;C` : '...'
+}
+test()
